@@ -1,0 +1,61 @@
+<div class="container-fluid" style="width:50em">
+
+<h2 mat-dialog-title>Cancellation Request</h2>
+<h3 mat-dialog-title style="color:blue">Please enter Registration number, Chassis no for validation </h3>
+<mat-dialog-content class="mat-typography">
+
+ 
+<form class="example-form">
+<div class="row">
+<mat-form-field class="example-full-width" appearance="fill">
+    <mat-label>Reference no:</mat-label>
+    <input matInput disabled placeholder="Ex. KL41A4444" [(ngModel)]="referenceNo" (keydown.space)="$event.preventDefault();"  name="referenceNo" >
+
+  </mat-form-field>
+  </div>
+  <div class="row">
+  <mat-form-field class="example-full-width" appearance="fill">
+    <mat-label>Registration no:</mat-label>
+    <input matInput placeholder="Ex. KL41A4444" [(ngModel)]="registrationNo" (keydown.space)="$event.preventDefault();" (ngModelChange)="registrationNo = $event.toUpperCase()" name="registrationNo" [disabled]="!disableSubmitForCancellation">
+
+
+  </mat-form-field>
+  </div>
+  <div class="row">
+  <mat-form-field class="example-full-width" appearance="fill">
+    <mat-label>Last 5 digits of Chassis no:</mat-label>
+        <input matInput placeholder="Ex. 12345" [(ngModel)]="chassisNo" minlength="5" maxlength="5" #uname="ngModel" (keydown.space)="$event.preventDefault();" (ngModelChange)="chassisNo = $event.toUpperCase()" name="chassisNo" [disabled]="!disableSubmitForCancellation">
+        <div *ngIf="uname.errors?.['minlength']" style="color:red">
+     Enter last 5 digits of chassis no.</div>
+  </mat-form-field>
+  </div>
+  <div class="row">
+  <mat-form-field class="example-full-width" appearance="fill">
+    <mat-label>Loan account no:</mat-label>
+    <input matInput disabled placeholder="Ex. 10012345000234" [(ngModel)]="loanAccountNo" (keydown.space)="$event.preventDefault();" (ngModelChange)="loanAccountNo = $event.toUpperCase()" name="loanAccountNo" >
+
+  </mat-form-field>
+  </div>
+
+
+</form>  
+
+    
+</mat-dialog-content>
+
+<mat-dialog-actions >
+    <button mat-raised-button color="primary"  [disabled]="!disableSubmitForCancellation || chassisNo === '' || loanAccountNo === '' || registrationNo === '' || uname.errors?.['minlength']  " (click)="fetchDetails()">Validate</button> 
+    <button mat-raised-button color="primary" (click)="submitForCancellation()" [disabled]="disableSubmitForCancellation" >Submit</button>
+     <button mat-raised-button color="primary"  mat-dialog-close  >Cancel</button>
+
+     
+</mat-dialog-actions>
+<mat-dialog-actions align="end">
+<button mat-raised-button color="warn" (click)="reject()">Reject Request</button>
+
+</mat-dialog-actions>
+</div>
+
+<div class="spinner" *ngIf="activeSpinner">
+<mat-spinner  class="matSpinner"></mat-spinner>
+</div>

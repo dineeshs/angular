@@ -1,0 +1,43 @@
+<h2 mat-dialog-title *ngIf="showProceed === true">Elgible - Details of inactive loan accounts linked to the collateral</h2>
+<h2 mat-dialog-title *ngIf="showProceed === false">Not Elgible - Details of active & inactive loan accounts linked to the collateral</h2>
+
+<mat-dialog-content class="mat-typography">
+ <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+  <!--- Note that these columns can be defined in any order.
+        The actual rendered columns are set as a property on the row definition" -->
+
+  <!-- Position Column -->
+  <ng-container matColumnDef="secu_srl_num">
+    <th mat-header-cell *matHeaderCellDef> Collateral Id </th>
+    <td mat-cell *matCellDef="let element"> {{element.secu_srl_num}} </td>
+  </ng-container>
+
+  <!-- Name Column -->
+  <ng-container matColumnDef="foracid">
+    <th mat-header-cell *matHeaderCellDef> Foracid </th>
+    <td mat-cell *matCellDef="let element"> {{element.foracid}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="terminationdate">
+    <th mat-header-cell *matHeaderCellDef> Termination Date </th>
+    <td mat-cell *matCellDef="let element"> {{element.terminationDate}} </td>
+  </ng-container>
+
+  
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+
+
+  
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+<mat-checkbox [(ngModel)]="checked"
+          class="example-margin" *ngIf="showProceed === true">
+        I confirm that i have verified the above details, and found to be eligible to proceed for cancellation.
+      </mat-checkbox>
+  <button mat-button mat-dialog-close [mat-dialog-close]="true" (click)="cancel()">Cancel</button>
+  <button mat-button cdkFocusInitial *ngIf="showProceed === true" [disabled]= "!checked" (click)="proceed()">Proceed</button>
+</mat-dialog-actions>

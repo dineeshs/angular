@@ -1,0 +1,40 @@
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+.example-form {
+  min-width: 150px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.example-full-width {
+  width: 100%;
+}
+
+table {
+  width: 100%;
+}
+
+.spinner {
+  left: 0;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(255,255,255,0.7);
+  top: 0;
+  z-index: 999;
+}
+.rowHolder {
+  top: 40%;
+  width: 100%;
+  position: absolute;
+}
+.matSpinner{
+  left: 45%;
+  top:40%;
+}
+
+ td , th {
+    white-space: normal;
+    word-wrap: break-word;
+    max-width: 200px;
+}
+

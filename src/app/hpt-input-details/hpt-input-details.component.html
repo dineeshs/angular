@@ -1,0 +1,174 @@
+<!-- <button mat-mini-fab  aria-label="Example icon button with a home icon">
+</button> -->
+<div class="container-fluid">
+<mat-tab-group (selectedTabChange)="tabClick($event)">
+<div class="col-md-4">
+
+ <mat-tab label="New Request" *ngIf="role==='ADMIN' || role==='MAKER'">
+  <mat-card>
+
+  <mat-card-title>Cancellation Request</mat-card-title>
+  <br>
+  <mat-card-subtitle>Please enter below details :</mat-card-subtitle>
+  <mat-card-content>
+<form class="example-form">
+  <mat-form-field class="example-full-width" appearance="fill">
+    <mat-label>Registration no:</mat-label>
+    <input matInput placeholder="Ex. KL41A4444" [(ngModel)]="registrationNo" (keydown.space)="$event.preventDefault();" (ngModelChange)="registrationNo = $event.toUpperCase()" name="registrationNo" [disabled]="!disableSubmitForCancellation">
+
+  </mat-form-field>
+  <mat-form-field class="example-full-width" appearance="fill">
+    <mat-label>Last 5 digits of Chassis no:</mat-label>
+        <input matInput placeholder="Ex. 12345" [(ngModel)]="chassisNo" minlength="5" maxlength="5" #uname="ngModel" (keydown.space)="$event.preventDefault();" (ngModelChange)="chassisNo = $event.toUpperCase()" name="chassisNo" [disabled]="!disableSubmitForCancellation">
+        <div *ngIf="uname.errors?.['minlength']" style="color:red">
+     Enter last 5 digits of chassis no.
+</div> 
+  </mat-form-field>
+  <mat-form-field class="example-full-width" appearance="fill">
+    <mat-label>Loan account no:</mat-label>
+    <input matInput placeholder="Ex. 10012345000234" [(ngModel)]="loanAccountNo" (keydown.space)="$event.preventDefault();" (ngModelChange)="loanAccountNo = $event.toUpperCase()" name="loanAccountNo" [disabled]="!disableSubmitForCancellation">
+
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" *ngIf="showTerminationDate === true">
+  <mat-label>Termination Date</mat-label>
+  <input matInput [matDatepicker]="picker" disabled [(ngModel)]="terminationDate" name="terminationDate" [disabled]="!disableSubmitForCancellation">
+  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-datepicker #picker></mat-datepicker>
+</mat-form-field>
+
+</form>  </mat-card-content>
+  <mat-card-actions>
+
+    <button mat-raised-button color="primary"  [disabled]="!disableSubmitForCancellation || chassisNo === '' || loanAccountNo === '' || registrationNo === '' || uname.errors?.['minlength']  " (click)="fetchDetails()">Fetch Details</button>
+    <button mat-raised-button color="primary" (click)="editDetails()" *ngIf="disableSubmitForCancellation === false">Edit Details</button>
+    <button mat-raised-button color="primary" (click)="submitForCancellation()" [disabled]="disableSubmitForCancellation" >Submit</button>
+  </mat-card-actions>
+</mat-card>
+
+
+
+  
+  </mat-tab>
+</div>
+<mat-tab label="Pending Requests" *ngIf="role==='ADMIN' || role==='CHECKER'">  
+
+   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+  <!--- Note that these columns can be defined in any order.
+        The actual rendered columns are set as a property on the row definition" -->
+
+  <!-- Position Column -->
+  <ng-container matColumnDef="no">
+    <th mat-header-cell *matHeaderCellDef> No. </th>
+    <td mat-cell *matCellDef="let element; let i = index;"> {{i+1}} </td>
+  </ng-container>
+
+  <!-- Name Column -->
+  <ng-container matColumnDef="chassisno">
+    <th mat-header-cell *matHeaderCellDef> Reference No. </th>
+    <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+  </ng-container>
+
+  <!-- Weight Column -->
+  <ng-container matColumnDef="loanaccountno">
+    <th mat-header-cell *matHeaderCellDef> Loan Account No. </th>
+    <td mat-cell *matCellDef="let element"> {{element.foracid}} </td>
+  </ng-container>
+
+  <!-- Symbol Column -->
+  <ng-container matColumnDef="action">
+    <th mat-header-cell *matHeaderCellDef> Action. </th>
+    <td mat-cell *matCellDef="let element">  <button mat-raised-button color="primary" (click)="clickCheckerCancellationDetails(element.id, element.foracid)">Fetch</button> </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+
+ 
+    
+  </mat-tab>
+<div class="col-md-4">
+ <mat-tab label="Completed Requests" > 
+ 
+ <table mat-table [dataSource]="completedDataSource" class="mat-elevation-z8">
+
+  <!--- Note that these columns can be defined in any order.
+        The actual rendered columns are set as a property on the row definition" -->
+
+  <!-- Position Column -->
+  <ng-container matColumnDef="no">
+    <th mat-header-cell *matHeaderCellDef> No. </th>
+    <td mat-cell *matCellDef="let element; let i = index;"> {{i+1}} </td>
+  </ng-container>
+
+  <!-- Name Column -->
+  <ng-container matColumnDef="referenceno">
+    <th mat-header-cell *matHeaderCellDef> Reference No. </th>
+    <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="solid">
+    <th mat-header-cell *matHeaderCellDef> Sol Id. </th>
+    <td mat-cell *matCellDef="let element"> {{element.solid}} </td>
+  </ng-container>
+
+  <!-- Weight Column -->
+  <ng-container matColumnDef="loanaccountno">
+    <th mat-header-cell *matHeaderCellDef> Foracid. </th>
+    <td mat-cell *matCellDef="let element"> {{element.foracid}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="chassisno">
+    <th mat-header-cell *matHeaderCellDef> Chassis No. </th>
+    <td mat-cell *matCellDef="let element"> {{element.chassisNo}} </td>
+  </ng-container>
+
+   <ng-container matColumnDef="registrationno">
+    <th mat-header-cell *matHeaderCellDef> Registration No. </th>
+    <td mat-cell *matCellDef="let element"> {{element.regnNo}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="maker">
+    <th mat-header-cell *matHeaderCellDef> Maker. </th>
+    <td mat-cell *matCellDef="let element"> {{element.maker}} </td>
+  </ng-container>
+   <ng-container matColumnDef="makerdate">
+    <th mat-header-cell *matHeaderCellDef> Maker Date. </th>
+    <td mat-cell *matCellDef="let element"> {{element.maker_date}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="checker">
+    <th mat-header-cell *matHeaderCellDef> Checker. </th>
+    <td mat-cell *matCellDef="let element"> {{element.checker}} </td>
+  </ng-container>
+   <ng-container matColumnDef="checkerdate">
+    <th mat-header-cell *matHeaderCellDef> Checker Date. </th>
+    <td mat-cell *matCellDef="let element"> {{element.checker_date}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="vahanresponse">
+    <th mat-header-cell *matHeaderCellDef> Result. </th>
+    <td mat-cell *matCellDef="let element"> {{element.vahan_response}} </td>
+  </ng-container>
+
+  <!-- Symbol Column -->
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumnsNew"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumnsNew;"></tr>
+</table>
+  </mat-tab>
+</div>
+</mat-tab-group>
+  
+ 
+  
+ 
+
+
+</div>
+<div class="spinner" *ngIf="activeSpinner">
+<mat-spinner  class="matSpinner"></mat-spinner>
+</div>
+
